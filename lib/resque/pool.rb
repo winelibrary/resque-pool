@@ -7,6 +7,7 @@ require 'resque/pool/pooled_worker'
 require 'erb'
 require 'fcntl'
 require 'yaml'
+require 'socket'
 
 module Resque
   class Pool
@@ -120,6 +121,8 @@ module Resque
         @config ||= {}
       end
       environment and @config[environment] and config.merge!(@config[environment])
+      hostname = (Socket.gethostname rescue nil)
+      hostname and @config[hostname] and config.merge!(@config[hostname])
       config.delete_if {|key, value| value.is_a? Hash }
     end
 
